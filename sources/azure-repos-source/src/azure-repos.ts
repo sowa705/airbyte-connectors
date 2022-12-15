@@ -1,5 +1,6 @@
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
 import {AirbyteLogger, wrapApiError} from 'faros-airbyte-cdk';
+import https from 'https';
 import {Dictionary} from 'ts-essentials';
 import {VError} from 'verror';
 
@@ -69,7 +70,10 @@ export class AzureRepos {
       throw new VError('project must not be an empty string');
     }
 
+    const agent = new https.Agent({family: 4});
+
     const httpClient = axios.create({
+      httpsAgent: agent,
       baseURL: `https://dev.azure.com/${config.organization}/${config.project}/_apis`,
       timeout: config.request_timeout ?? DEFAULT_REQUEST_TIMEOUT,
       maxContentLength: Infinity,
@@ -78,6 +82,7 @@ export class AzureRepos {
       headers: {Authorization: `Basic ${config.access_token}`},
     });
     const graphClient = axios.create({
+      httpsAgent: agent,
       baseURL: `https://vssps.dev.azure.com/${config.organization}/_apis/graph`,
       timeout: config.request_timeout ?? DEFAULT_REQUEST_TIMEOUT,
       maxContentLength: Infinity,

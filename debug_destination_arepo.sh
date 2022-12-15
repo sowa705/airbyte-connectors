@@ -1,0 +1,2 @@
+#!/bin/sh
+cat streams/arepo_processed.log | node --inspect-brk destinations/airbyte-faros-destination/bin/main.js write --config destinations/airbyte-faros-destination/config.json --catalog destinations/airbyte-faros-destination/test/resources/azure-repos/catalog.json --dry-run
